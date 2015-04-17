@@ -20,12 +20,6 @@ RUN /opt/steamcmd/steamcmd.sh \
             +app_update 4020 validate \
             +quit
 
-# add settings file
-#ADD server.cfg /opt/csgo/csgo/cfg/server.cfg
-
-# create volume
-VOLUME /opt/gmod
-
 #define ports
 ENV PORT 27015
 EXPOSE 26901/udp
@@ -34,6 +28,18 @@ EXPOSE 27015
 EXPOSE 27015/udp
 EXPOSE 27020/udp
 
+# add settings file
+RUN rm /opt/gmod/garrysmod/cfg/server.cfg
+ADD server.cfg /opt/gmod/garrysmod/cfg/server.cfg
+
+
+# dependancy
+RUN ln -s /opt/steamcmd/linux32/libstdc++.so.6 /opt/gmod/bin/
+
+# create volume
+VOLUME /opt/gmod
+
+
 WORKDIR /opt/gmod
-CMD ["/opt/gmod/srcds_run", "-usercon", "-ip 0.0.0.0"]
-#ENTRYPOINT ["./srcds_run"]
+#CMD ["/bin/bash"]
+CMD  ["/opt/gmod/srcds_run", "-game", "garrysmod", "-usercon", "-ip", "0.0.0.0"]
